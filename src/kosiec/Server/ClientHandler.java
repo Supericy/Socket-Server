@@ -3,6 +3,7 @@ package kosiec.Server;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
 import java.net.Socket;
 
 /**
@@ -12,6 +13,8 @@ public class ClientHandler implements Handler {
 
 	private final CommandTranslator commandTranslator;
 	private final CommandFactory commandFactory;
+
+	private boolean done = false;
 
 	public ClientHandler(CommandTranslator commandTranslator, CommandFactory commandFactory)
 	{
@@ -24,31 +27,47 @@ public class ClientHandler implements Handler {
 	{
 		try
 		{
-			BufferedReader br = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			BufferedReader socketIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			PrintStream socketOut = new PrintStream(socket.getOutputStream());
 
-			String line = br.readLine();
-
-			MetaCommand meta = commandTranslator.decode(line);
-
-			Command command = commandFactory.make(meta.getCommandName());
-
-			try
+			while (!done)
 			{
-				command.execute(meta.getCommandArgs());
-			}
-			catch (CommandException e)
-			{
-				System.err.println(e.getMessage());
+				try
+				{
+					String line = socketIn.readLine();
+					MetaCommand meta = commandTranslator.decode(line);
+
+					if ("quit".equals(meta.getCommandName()))
+					{
+						done = true;
+						socketOut.println("quit");
+					}
+					else
+					{
+						makeAndExecute(meta);
+						socketOut.println("ok");
+					}
+				}
+				catch (CommandException e)
+				{
+					socketOut.println(e.getMessage());
+//					System.err.println(e.getMessage());
+				}
 			}
 
 			socket.close();
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			System.err.println("Client IOException; client probably closed without signaling");
+//			e.printStackTrace();
 		}
 	}
 
-
+	private void makeAndExecute(MetaCommand meta) throws CommandException
+	{
+		Command c = commandFactory.make(meta.getCommandName());
+		c.execute(meta.getCommandArgs());
+	}
 
 }

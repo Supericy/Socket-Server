@@ -1,6 +1,7 @@
 package kosiec;
 
 import kosiec.Server.Arduino.Commands.ArduinoCommand;
+import kosiec.Server.CommandException;
 import kosiec.Server.CommandFactory;
 import kosiec.Server.Container;
 import org.junit.Test;
@@ -19,11 +20,23 @@ public class CommandFactoryTest {
 
 		assertThat(container.get(ArduinoCommand.class), instanceOf(ArduinoCommand.class));
 
-		CommandFactory commandFactory = new CommandFactory(container);
+		CommandFactory commandFactory = new CommandFactory(container, new String[] {"kosiec.Server.Arduino.Commands"});
 
-		assertThat(commandFactory.make("ArduinoCommand"), instanceOf(ArduinoCommand.class));
-		assertThat(commandFactory.make(""), nullValue());
-		assertThat(commandFactory.make("something random"), nullValue());
+		assertThat(commandFactory.make("Arduino"), instanceOf(ArduinoCommand.class));
+
+		try
+		{
+			commandFactory.make("");
+			fail("Command factory should be throwing a CommandException");
+		}
+		catch (CommandException e) {}
+
+		try
+		{
+			commandFactory.make("something random");
+			fail("Command factory should be throwing a CommandException");
+		}
+		catch (CommandException e) {}
 	}
 
 	static class MockContainer implements Container {

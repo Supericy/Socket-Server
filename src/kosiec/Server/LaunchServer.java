@@ -3,12 +3,14 @@ package kosiec.Server;
 import jssc.SerialPort;
 import jssc.SerialPortException;
 import kosiec.Server.Arduino.Commands.ArduinoCommand;
+import kosiec.Server.Arduino.SerialPort.SerialPortReader;
 import kosiec.Server.Arduino.SerialPort.UserInterfaceSerialPortDirectionWriter;
 import kosiec.Server.Arduino.SerialPort.SerialPortDirectionWriter;
 import kosiec.Server.Arduino.SerialPort.SerialPortFactory;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.util.concurrent.Executors;
 
 /**
  * Created by Chad on 10/31/2014.
@@ -16,6 +18,9 @@ import java.net.ServerSocket;
 public class LaunchServer {
 
 	public static final int PORT = 5555;
+	public static final String[] COMMAND_PACKAGES = {
+			"kosiec.Server.Arduino.Commands"
+	};
 
 	public static void main(String[] args)
 	{
@@ -29,7 +34,6 @@ public class LaunchServer {
 			while (true)
 			{
 				ui.display("Waiting for a connection...");
-				// single threaded atm
 				server.acceptAndHandleClient();
 				ui.display("Client has been handled.");
 			}
@@ -52,9 +56,10 @@ public class LaunchServer {
 			container.put(SerialPortDirectionWriter.class, new UserInterfaceSerialPortDirectionWriter(container.get(UserInterface.class)));
 
 			container.put(CommandTranslator.class, new CommandTranslator());
-			container.put(CommandFactory.class, new CommandFactory(container));
+			container.put(CommandFactory.class, new CommandFactory(container, COMMAND_PACKAGES));
 
-			container.put(Handler.class, new ClientHandler(container.get(CommandTranslator.class), container.get(CommandFactory.class)));
+//			container.put(Handler.class, new ClientHandler(container.get(CommandTranslator.class), container.get(CommandFactory.class)));
+			container.put(Handler.class, new ThreadedHandler(Executors.newCachedThreadPool(), new ClientHandler(container.get(CommandTranslator.class), container.get(CommandFactory.class))));
 
 			container.put(ServerSocket.class, new ServerSocket(PORT));
 			container.put(Server.class, new Server(container.get(ServerSocket.class), container.get(Handler.class)));

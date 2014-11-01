@@ -1,14 +1,15 @@
-package kosiec.Server;
+package kosiec.Server.Arduino.SerialPort;
 
 import jssc.SerialPort;
 import jssc.SerialPortEvent;
 import jssc.SerialPortEventListener;
 import jssc.SerialPortException;
+import kosiec.Server.UserInterface;
 
 /**
  * Created by Chad on 10/31/2014.
  */
-class SerialPortReader implements SerialPortEventListener {
+public class SerialPortReader implements SerialPortEventListener {
 
 	private final SerialPort serialPort;
 	private final UserInterface ui;
