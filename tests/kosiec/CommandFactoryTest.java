@@ -1,6 +1,6 @@
 package kosiec;
 
-import kosiec.Server.Arduino.Commands.ArduinoCommand;
+import kosiec.Server.Commands.ArduinoCommand;
 import kosiec.Server.CommandException;
 import kosiec.Server.CommandFactory;
 import kosiec.Server.Container;
@@ -20,7 +20,7 @@ public class CommandFactoryTest {
 
 		assertThat(container.get(ArduinoCommand.class), instanceOf(ArduinoCommand.class));
 
-		CommandFactory commandFactory = new CommandFactory(container, new String[] {"kosiec.Server.Arduino.Commands"});
+		CommandFactory commandFactory = new CommandFactory(container, new String[] {"kosiec.Server.Commands"});
 
 		assertThat(commandFactory.make("Arduino"), instanceOf(ArduinoCommand.class));
 

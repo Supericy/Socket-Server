@@ -1,10 +1,12 @@
-package kosiec.Server.Arduino.Commands;
+package kosiec.Server.Commands;
 
 import jssc.SerialPortException;
 import kosiec.Server.Arduino.JoystickDirection;
 import kosiec.Server.Arduino.SerialPort.SerialPortDirectionWriter;
 import kosiec.Server.Command;
 import kosiec.Server.CommandException;
+
+import java.net.Socket;
 
 /**
  * Created by Chad on 10/31/2014.
@@ -19,7 +21,7 @@ public class ArduinoCommand implements Command {
 	}
 
 	@Override
-	public void execute(String[] args)
+	public void execute(Socket socket, String[] args)
 	{
 		validateArgsLength(args.length);
 

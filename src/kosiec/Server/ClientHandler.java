@@ -30,27 +30,20 @@ public class ClientHandler implements Handler {
 			BufferedReader socketIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			PrintStream socketOut = new PrintStream(socket.getOutputStream());
 
-			while (!done)
+			while (!done && !socket.isClosed())
 			{
 				try
 				{
 					String line = socketIn.readLine();
 					MetaCommand meta = commandTranslator.decode(line);
 
-					if ("quit".equals(meta.getCommandName()))
-					{
-						done = true;
-						socketOut.println("quit");
-					}
-					else
-					{
-						makeAndExecute(meta);
-						socketOut.println("ok");
-					}
+					Command c = commandFactory.make(meta.getCommandName());
+					c.execute(socket, meta.getCommandArgs());
 				}
 				catch (CommandException e)
 				{
-					socketOut.println(e.getMessage());
+					if (!socket.isClosed())
+						socketOut.println(e.getMessage());
 //					System.err.println(e.getMessage());
 				}
 			}
@@ -64,10 +57,5 @@ public class ClientHandler implements Handler {
 		}
 	}
 
-	private void makeAndExecute(MetaCommand meta) throws CommandException
-	{
-		Command c = commandFactory.make(meta.getCommandName());
-		c.execute(meta.getCommandArgs());
-	}
 
 }

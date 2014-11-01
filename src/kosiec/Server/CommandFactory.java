@@ -1,7 +1,5 @@
 package kosiec.Server;
 
-import kosiec.Server.Arduino.Commands.ArduinoCommand;
-
 /**
  * Created by Chad on 10/31/2014.
  */

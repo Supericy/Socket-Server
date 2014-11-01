@@ -2,11 +2,11 @@ package kosiec.Server;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;
-import kosiec.Server.Arduino.Commands.ArduinoCommand;
-import kosiec.Server.Arduino.SerialPort.SerialPortReader;
+import kosiec.Server.Commands.ArduinoCommand;
 import kosiec.Server.Arduino.SerialPort.UserInterfaceSerialPortDirectionWriter;
 import kosiec.Server.Arduino.SerialPort.SerialPortDirectionWriter;
 import kosiec.Server.Arduino.SerialPort.SerialPortFactory;
+import kosiec.Server.Commands.DisconnectCommand;
 
 import java.io.IOException;
 import java.net.ServerSocket;
@@ -19,7 +19,7 @@ public class LaunchServer {
 
 	public static final int PORT = 5555;
 	public static final String[] COMMAND_PACKAGES = {
-			"kosiec.Server.Arduino.Commands"
+			"kosiec.Server.Commands"
 	};
 
 	public static void main(String[] args)
@@ -35,13 +35,19 @@ public class LaunchServer {
 			{
 				ui.display("Waiting for a connection...");
 				server.acceptAndHandleClient();
-				ui.display("Client has been handled.");
+				ui.display("Connection accepted & handled");
 			}
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
+	}
+
+	public static void loadCommands(Container container) throws Exception
+	{
+		container.put(ArduinoCommand.class, new ArduinoCommand(container.get(SerialPortDirectionWriter.class)));
+		container.put(DisconnectCommand.class, new DisconnectCommand(container.get(UserInterface.class)));
 	}
 
 	// TODO: could export this to a config file
@@ -52,6 +58,7 @@ public class LaunchServer {
 		try
 		{
 			container.put(UserInterface.class, new ConsoleUserInterface(System.out));
+
 //			container.put(SerialPortDirectionWriter.class, new JsscSerialPortDirectionWriter(createSerialPort(container.get(UserInterface.class))));
 			container.put(SerialPortDirectionWriter.class, new UserInterfaceSerialPortDirectionWriter(container.get(UserInterface.class)));
 
@@ -76,11 +83,6 @@ public class LaunchServer {
 		return container;
 	}
 
-	public static void loadCommands(Container container) throws Exception
-	{
-		container.put(ArduinoCommand.class, new ArduinoCommand(container.get(SerialPortDirectionWriter.class)));
-	}
-
 	public static SerialPort createSerialPort(UserInterface ui) throws SerialPortException
 	{
 		SerialPortFactory serialPortFactory = new SerialPortFactory();
@@ -88,9 +90,9 @@ public class LaunchServer {
 		SerialPort serialPort = serialPortFactory.make();
 
 		// init our mask for displaying data returned from the serial port
-		int mask = SerialPort.MASK_RXCHAR + SerialPort.MASK_CTS + SerialPort.MASK_DSR;//Prepare mask
-		serialPort.setEventsMask(mask);//Set mask
-		serialPort.addEventListener(new SerialPortReader(serialPort, ui));//Add SerialPortEventListener
+//		int mask = SerialPort.MASK_RXCHAR + SerialPort.MASK_CTS + SerialPort.MASK_DSR;//Prepare mask
+//		serialPort.setEventsMask(mask);//Set mask
+//		serialPort.addEventListener(new SerialPortReader(serialPort, ui));//Add SerialPortEventListener
 
 		return serialPort;
 	}
