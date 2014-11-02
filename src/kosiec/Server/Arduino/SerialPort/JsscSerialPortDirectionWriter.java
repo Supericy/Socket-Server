@@ -19,6 +19,29 @@ public class JsscSerialPortDirectionWriter implements SerialPortDirectionWriter 
 	@Override
 	public void write(JoystickDirection direction, int amount) throws SerialPortException
 	{
+		byte directionByte;
+		byte amountByte;
 
+		switch (direction)
+		{
+			case UP:
+				directionByte = (byte)'w';
+				break;
+			case DOWN:
+				directionByte = (byte)'s';
+				break;
+			case LEFT:
+				directionByte = (byte)'a';
+				break;
+			case RIGHT:
+				directionByte = (byte)'d';
+				break;
+			default:
+				directionByte = (byte)0;
+		}
+
+		amountByte = (byte)amount;
+
+		serialPort.writeBytes(new byte[] {directionByte, amountByte});
 	}
 }

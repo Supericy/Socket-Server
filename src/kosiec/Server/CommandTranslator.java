@@ -12,6 +12,9 @@ public class CommandTranslator {
 
 	public MetaCommand decode(String commandString)
 	{
+		if (commandString == null)
+			return null;
+
 		String[] tokens = commandString.split(DELIMITER);
 
 		String commandName = tokens[0];

@@ -35,16 +35,23 @@ public class ClientHandler implements Handler {
 				try
 				{
 					String line = socketIn.readLine();
-					MetaCommand meta = commandTranslator.decode(line);
 
-					Command c = commandFactory.make(meta.getCommandName());
-					c.execute(socket, meta.getCommandArgs());
+					if (line != null)
+					{
+						MetaCommand meta = commandTranslator.decode(line);
+
+						if (meta != null)
+						{
+							Command c = commandFactory.make(meta.getCommandName());
+							c.execute(socket, meta.getCommandArgs());
+						}
+					}
 				}
 				catch (CommandException e)
 				{
 					if (!socket.isClosed())
 						socketOut.println(e.getMessage());
-//					System.err.println(e.getMessage());
+					System.err.println(e.getMessage());
 				}
 			}
 
