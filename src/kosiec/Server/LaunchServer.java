@@ -90,9 +90,9 @@ public class LaunchServer {
 		SerialPort serialPort = serialPortFactory.make();
 
 		// init our mask for displaying data returned from the serial port
-//		int mask = SerialPort.MASK_RXCHAR + SerialPort.MASK_CTS + SerialPort.MASK_DSR;//Prepare mask
-//		serialPort.setEventsMask(mask);//Set mask
-//		serialPort.addEventListener(new SerialPortReader(serialPort, ui));//Add SerialPortEventListener
+		int mask = SerialPort.MASK_RXCHAR + SerialPort.MASK_CTS + SerialPort.MASK_DSR;//Prepare mask
+		serialPort.setEventsMask(mask);//Set mask
+		serialPort.addEventListener(new SerialPortReader(serialPort, ui));//Add SerialPortEventListener
 
 		return serialPort;
 	}
