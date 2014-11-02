@@ -39,7 +39,7 @@ public class LaunchServer {
 				ui.display("Connection accepted & handled");
 			}
 		}
-		catch (IOException e)
+		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
@@ -66,7 +66,6 @@ public class LaunchServer {
 			container.put(CommandTranslator.class, new CommandTranslator());
 			container.put(CommandFactory.class, new CommandFactory(container, COMMAND_PACKAGES));
 
-//			container.put(Handler.class, new ClientHandler(container.get(CommandTranslator.class), container.get(CommandFactory.class)));
 			container.put(Handler.class, new ThreadedHandler(Executors.newCachedThreadPool(), new ClientHandler(container.get(CommandTranslator.class), container.get(CommandFactory.class))));
 
 			container.put(ServerSocket.class, new ServerSocket(PORT));
