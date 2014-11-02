@@ -2,11 +2,8 @@ package kosiec.Server;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;
-import kosiec.Server.Arduino.SerialPort.SerialPortReader;
+import kosiec.Server.Arduino.SerialPort.*;
 import kosiec.Server.Commands.ArduinoCommand;
-import kosiec.Server.Arduino.SerialPort.UserInterfaceSerialPortDirectionWriter;
-import kosiec.Server.Arduino.SerialPort.SerialPortDirectionWriter;
-import kosiec.Server.Arduino.SerialPort.SerialPortFactory;
 import kosiec.Server.Commands.DisconnectCommand;
 
 import java.io.IOException;
@@ -52,7 +49,7 @@ public class LaunchServer {
 	}
 
 	// TODO: could export this to a config file
-	public static Container loadClassContainer()
+	public static Container loadClassContainer() throws Exception
 	{
 		Container container = new ClassContainer();
 
@@ -76,8 +73,8 @@ public class LaunchServer {
 		catch (Exception e)
 		{
 			System.err.println("Contained has failed to load:");
-			e.printStackTrace();
-			container = null;
+			System.err.println(e.getMessage());
+			throw e;
 		}
 
 		return container;
