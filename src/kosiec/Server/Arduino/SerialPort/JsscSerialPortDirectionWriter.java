@@ -37,7 +37,7 @@ public class JsscSerialPortDirectionWriter implements SerialPortDirectionWriter 
 				directionByte = (byte)'d';
 				break;
 			default:
-				directionByte = (byte)0;
+				throw new SerialPortException("JsscSerialPortDirectionWriter", "write", "Direction supplied not supported");
 		}
 
 		amountByte = (byte)amount;
