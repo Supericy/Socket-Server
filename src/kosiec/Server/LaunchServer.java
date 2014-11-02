@@ -2,6 +2,7 @@ package kosiec.Server;
 
 import jssc.SerialPort;
 import jssc.SerialPortException;
+import kosiec.Server.Arduino.SerialPort.SerialPortReader;
 import kosiec.Server.Commands.ArduinoCommand;
 import kosiec.Server.Arduino.SerialPort.UserInterfaceSerialPortDirectionWriter;
 import kosiec.Server.Arduino.SerialPort.SerialPortDirectionWriter;
