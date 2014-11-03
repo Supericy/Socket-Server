@@ -14,12 +14,11 @@ import java.util.Observable;
  */
 public class Client {
 
-	public static final String DISCONNECT_MSG = "Disconnect";
+	public static final String DISCONNECT_MESSAGE = "Disconnect";
 
 	private final Socket socket;
 	private final BufferedReader in;
 	private final PrintStream out;
-	private boolean open;
 	private final List<ResponseListener> listeners;
 
 	public Client(String ip, int port) throws IOException
@@ -28,18 +27,17 @@ public class Client {
 		this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 		this.out = new PrintStream(socket.getOutputStream());
 
-		this.open = true;
 		this.listeners = new ArrayList<ResponseListener>();
 	}
 
-	public boolean isOpen()
+	public boolean isConnected()
 	{
-		return !socket.isClosed() && open;
+		return socket.isConnected();
 	}
 
 	public void sendMsg(String msg) throws IOException
 	{
-		if (!open)
+		if (!isConnected())
 			throw new IOException("socket closed");
 
 		out.println(msg);
@@ -47,7 +45,7 @@ public class Client {
 
 	public String readMsg() throws IOException
 	{
-		if (!open)
+		if (!isConnected())
 			throw new IOException("socket closed");
 
 		return in.readLine();
@@ -60,7 +58,7 @@ public class Client {
 
 	public void listen() throws IOException
 	{
-		if (!open)
+		if (!isConnected())
 			throw new IOException("socket closed");
 
 		String msg = readMsg();
@@ -68,7 +66,6 @@ public class Client {
 		if ("Disconnected".equals(msg))
 		{
 			socket.close();
-			open = false;
 		}
 
 		for (ResponseListener listener : listeners)

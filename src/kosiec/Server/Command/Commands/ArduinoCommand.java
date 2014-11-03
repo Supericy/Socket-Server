@@ -1,10 +1,10 @@
-package kosiec.Server.Commands;
+package kosiec.Server.Command.Commands;
 
 import jssc.SerialPortException;
 import kosiec.Server.Arduino.JoystickDirection;
 import kosiec.Server.Arduino.SerialPort.SerialPortDirectionWriter;
-import kosiec.Server.Command;
-import kosiec.Server.CommandException;
+import kosiec.Server.Command.Command;
+import kosiec.Server.Command.CommandException;
 
 import java.net.Socket;
 

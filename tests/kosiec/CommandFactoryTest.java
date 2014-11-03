@@ -1,8 +1,8 @@
 package kosiec;
 
-import kosiec.Server.Commands.ArduinoCommand;
-import kosiec.Server.CommandException;
-import kosiec.Server.CommandFactory;
+import kosiec.Server.Command.Commands.ArduinoCommand;
+import kosiec.Server.Command.CommandException;
+import kosiec.Server.Command.CommandFactory;
 import kosiec.Server.Container;
 import org.junit.Test;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -20,7 +20,7 @@ public class CommandFactoryTest {
 
 		assertThat(container.get(ArduinoCommand.class), instanceOf(ArduinoCommand.class));
 
-		CommandFactory commandFactory = new CommandFactory(container, new String[] {"kosiec.Server.Commands"});
+		CommandFactory commandFactory = new CommandFactory(container, new String[] {"kosiec.Server.Command.Commands"});
 
 		assertThat(commandFactory.make("Arduino"), instanceOf(ArduinoCommand.class));
 

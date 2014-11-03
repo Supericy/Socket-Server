@@ -3,10 +3,11 @@ package kosiec.Server;
 import jssc.SerialPort;
 import jssc.SerialPortException;
 import kosiec.Server.Arduino.SerialPort.*;
-import kosiec.Server.Commands.ArduinoCommand;
-import kosiec.Server.Commands.DisconnectCommand;
+import kosiec.Server.Command.CommandFactory;
+import kosiec.Server.Command.CommandTranslator;
+import kosiec.Server.Command.Commands.ArduinoCommand;
+import kosiec.Server.Command.Commands.DisconnectCommand;
 
-import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.concurrent.Executors;
 
@@ -15,9 +16,9 @@ import java.util.concurrent.Executors;
  */
 public class LaunchServer {
 
-	public static final int PORT = 5555;
+	public static final int PORT = 5556;
 	public static final String[] COMMAND_PACKAGES = {
-			"kosiec.Server.Commands"
+			"kosiec.Server.Command.Commands"
 	};
 
 	public static void main(String[] args)
@@ -29,17 +30,22 @@ public class LaunchServer {
 			Server server = container.get(Server.class);
 			UserInterface ui = container.get(UserInterface.class);
 
+			ui.display("Accepting connections on port: " + PORT);
+
 			while (true)
 			{
-				ui.display("Waiting for a connection...");
 				server.acceptAndHandleClient();
-				ui.display("Connection accepted & handled");
 			}
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
+	}
+
+	public static void setupLogging()
+	{
+
 	}
 
 	public static void loadCommands(Container container) throws Exception
@@ -63,10 +69,10 @@ public class LaunchServer {
 			container.put(CommandTranslator.class, new CommandTranslator());
 			container.put(CommandFactory.class, new CommandFactory(container, COMMAND_PACKAGES));
 
-			container.put(Handler.class, new ThreadedHandler(Executors.newCachedThreadPool(), new ClientHandler(container.get(CommandTranslator.class), container.get(CommandFactory.class))));
+			container.put(SocketHandler.class, new ThreadedSocketHandler(Executors.newCachedThreadPool(), new ClientHandler(container.get(CommandTranslator.class), container.get(CommandFactory.class))));
 
 			container.put(ServerSocket.class, new ServerSocket(PORT));
-			container.put(Server.class, new Server(container.get(ServerSocket.class), container.get(Handler.class)));
+			container.put(Server.class, new Server(container.get(ServerSocket.class), container.get(SocketHandler.class)));
 
 			loadCommands(container);
 		}

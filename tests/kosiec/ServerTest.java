@@ -1,6 +1,6 @@
 package kosiec;
 
-import kosiec.Server.Handler;
+import kosiec.Server.SocketHandler;
 import kosiec.Server.Server;
 import org.junit.Test;
 
@@ -50,7 +50,7 @@ public class ServerTest {
 
 	}
 
-	static class MockHandler implements Handler {
+	static class MockHandler implements SocketHandler {
 
 		Socket handledSocket = null;
 		boolean handled = false;

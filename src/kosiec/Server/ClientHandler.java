@@ -1,5 +1,10 @@
 package kosiec.Server;
 
+import kosiec.Server.Command.Command;
+import kosiec.Server.Command.CommandException;
+import kosiec.Server.Command.CommandFactory;
+import kosiec.Server.Command.CommandTranslator;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -9,7 +14,7 @@ import java.net.Socket;
 /**
  * Created by Chad on 10/31/2014.
  */
-public class ClientHandler implements Handler {
+public class ClientHandler implements SocketHandler {
 
 	private final CommandTranslator commandTranslator;
 	private final CommandFactory commandFactory;
@@ -40,7 +45,7 @@ public class ClientHandler implements Handler {
 					{
 						MetaCommand meta = commandTranslator.decode(line);
 
-						if (meta != null)
+						if (meta != null && meta.getCommandName() != null && meta.getCommandArgs() != null)
 						{
 							Command c = commandFactory.make(meta.getCommandName());
 							c.execute(socket, meta.getCommandArgs());

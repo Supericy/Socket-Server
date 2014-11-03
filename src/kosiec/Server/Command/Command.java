@@ -1,4 +1,4 @@
-package kosiec.Server;
+package kosiec.Server.Command;
 
 import java.net.Socket;
 

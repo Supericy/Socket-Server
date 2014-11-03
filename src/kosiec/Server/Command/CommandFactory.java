@@ -1,4 +1,6 @@
-package kosiec.Server;
+package kosiec.Server.Command;
+
+import kosiec.Server.Container;
 
 /**
  * Created by Chad on 10/31/2014.

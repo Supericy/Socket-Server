@@ -1,6 +1,6 @@
-package kosiec.Server.Commands;
+package kosiec.Server.Command.Commands;
 
-import kosiec.Server.Command;
+import kosiec.Server.Command.Command;
 import kosiec.Server.UserInterface;
 
 import java.io.IOException;

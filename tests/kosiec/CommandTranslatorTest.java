@@ -1,6 +1,6 @@
 package kosiec;
 
-import kosiec.Server.CommandTranslator;
+import kosiec.Server.Command.CommandTranslator;
 import kosiec.Server.MetaCommand;
 import org.junit.Test;
 

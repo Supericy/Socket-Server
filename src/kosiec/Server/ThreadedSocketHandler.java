@@ -6,12 +6,12 @@ import java.util.concurrent.ExecutorService;
 /**
  * Created by Chad on 11/1/2014.
  */
-public class ThreadedHandler implements Handler {
+public class ThreadedSocketHandler implements SocketHandler {
 
 	private final ExecutorService executor;
-	private final Handler handler;
+	private final SocketHandler handler;
 
-	public ThreadedHandler(ExecutorService executor, Handler handler)
+	public ThreadedSocketHandler(ExecutorService executor, SocketHandler handler)
 	{
 		this.executor = executor;
 		this.handler = handler;

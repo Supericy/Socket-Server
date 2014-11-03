@@ -1,4 +1,6 @@
-package kosiec.Server;
+package kosiec.Server.Command;
+
+import kosiec.Server.MetaCommand;
 
 import java.util.Arrays;
 
