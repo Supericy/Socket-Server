@@ -3,9 +3,13 @@ package kosiec.Server.Command.Commands;
 import jssc.SerialPortException;
 import kosiec.Server.Arduino.Direction;
 import kosiec.Server.Arduino.SerialPort.SerialPortDirectionWriter;
+import kosiec.Server.Client;
 import kosiec.Server.Command.Command;
 import kosiec.Server.Command.CommandException;
+import kosiec.Server.Command.Permission;
+import kosiec.Server.Command.PermissionDeniedException;
 
+import java.io.IOException;
 import java.net.Socket;
 
 /**
@@ -21,8 +25,11 @@ public class ArduinoCommand implements Command {
 	}
 
 	@Override
-	public void execute(Socket socket, String[] args)
+	public void execute(Client client, String[] args)
 	{
+		if (!client.hasPermission(Permission.ARDUINO))
+			throw new PermissionDeniedException("ArduinoCommand: permission denied");
+
 		validateArgsLength(args.length);
 
 		Direction direction = getJoystickDirection(args[0]);
@@ -31,8 +38,13 @@ public class ArduinoCommand implements Command {
 		try
 		{
 			serialPortDirectionWriter.write(direction, amount);
+			client.send("ok");
 		}
 		catch (SerialPortException e)
+		{
+			System.err.println(e.getMessage());
+		}
+		catch (IOException e)
 		{
 			System.err.println(e.getMessage());
 		}
