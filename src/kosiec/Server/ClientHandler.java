@@ -1,9 +1,6 @@
 package kosiec.Server;
 
-import kosiec.Server.Command.Command;
-import kosiec.Server.Command.CommandException;
-import kosiec.Server.Command.CommandFactory;
-import kosiec.Server.Command.CommandTranslator;
+import kosiec.Server.Command.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,7 +30,11 @@ public class ClientHandler implements SocketHandler {
 		try
 		{
 			BufferedReader socketIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-			PrintStream socketOut = new PrintStream(socket.getOutputStream());
+//			PrintStream socketOut = new PrintStream(socket.getOutputStream());
+
+			// execute a connect command
+			commandFactory.make("Connect")
+						  .execute(socket, new String[0]);
 
 			while (!done && !socket.isClosed())
 			{
@@ -45,7 +46,8 @@ public class ClientHandler implements SocketHandler {
 					{
 						MetaCommand meta = commandTranslator.decode(line);
 
-						if (meta != null && meta.getCommandName() != null && meta.getCommandArgs() != null)
+						// Connect command is off limits from the client, since we only execute it once.
+						if (!meta.getCommandName().equals("Connect"))
 						{
 							Command c = commandFactory.make(meta.getCommandName());
 							c.execute(socket, meta.getCommandArgs());
@@ -54,9 +56,11 @@ public class ClientHandler implements SocketHandler {
 				}
 				catch (CommandException e)
 				{
-					if (!socket.isClosed())
-						socketOut.println(e.getMessage());
-					System.err.println(e.getMessage());
+					handleException(socket, e);
+				}
+				catch (TranslationException e)
+				{
+					handleException(socket, e);
 				}
 			}
 
@@ -64,9 +68,19 @@ public class ClientHandler implements SocketHandler {
 		}
 		catch (IOException e)
 		{
-			System.err.println("Client IOException; client probably closed without signaling");
-//			e.printStackTrace();
+			// execute a connect command
+			commandFactory.make("Disconnect")
+					.execute(socket, new String[0]);
+
+//			System.err.println("Client IOException; client probably closed without signaling");
 		}
+	}
+
+	private void handleException(Socket socket, Exception e) throws IOException
+	{
+		if (!socket.isClosed())
+			new PrintStream(socket.getOutputStream()).println(e.getMessage());
+		System.err.println(e.getMessage());
 	}
 
 
