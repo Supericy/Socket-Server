@@ -1,5 +1,7 @@
 package kosiec.Server.Command;
 
+import kosiec.Server.Client;
+
 import java.net.Socket;
 
 /**
@@ -7,6 +9,6 @@ import java.net.Socket;
  */
 public interface Command {
 
-	public void execute(Socket socket, String[] args);
+	public void execute(Client client, String[] args);
 
 }

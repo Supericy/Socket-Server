@@ -3,7 +3,7 @@ package kosiec.Server.Command;
 /**
  * Created by Chad on 11/5/2014.
  */
-public class TranslationException extends Exception {
+public class TranslationException extends CommandException {
 
 	public TranslationException(String msg)
 	{

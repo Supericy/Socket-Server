@@ -1,5 +1,6 @@
 package kosiec.Server.Command.Commands;
 
+import kosiec.Server.Client;
 import kosiec.Server.Command.Command;
 import kosiec.Server.UserInterface;
 
@@ -20,18 +21,18 @@ public class ConnectCommand implements Command {
 	}
 
 	@Override
-	public void execute(Socket socket, String[] args)
+	public void execute(Client client, String[] args)
 	{
 		try
 		{
-			new PrintStream(socket.getOutputStream()).println("Connected");
+			client.send("Connected");
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
 
-		ui.display("Client connected from: " + socket.getInetAddress());
+		ui.display("Client connected from: " + client.getInetAddress());
 	}
 
 }

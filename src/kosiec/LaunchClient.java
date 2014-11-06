@@ -14,8 +14,6 @@ import java.util.logging.Logger;
  */
 public class LaunchClient {
 
-	public static Thread listenerThread;
-
 	public static void main(String[] args) throws IOException, InterruptedException
 	{
 		Client client = createClient();

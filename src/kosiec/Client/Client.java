@@ -61,7 +61,8 @@ public class Client {
 				catch (IOException e)
 				{
 					System.err.println("Unexpected server shutdown");
-					disconnect(false, true);
+//					disconnect(false, true);
+					emit("Disconnected");
 				}
 			}
 		});
@@ -99,8 +100,12 @@ public class Client {
 
 			in.close();
 			out.close();
-			socket.close();
-			socket = null;
+
+			if (socket != null)
+			{
+				socket.close();
+				socket = null;
+			}
 		}
 		catch (IOException e)
 		{

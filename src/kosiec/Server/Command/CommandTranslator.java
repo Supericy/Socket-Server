@@ -23,20 +23,36 @@ public class CommandTranslator {
 
 	public MetaCommand decode(String commandString) throws TranslationException
 	{
-		if (commandString == null)
-			throw new TranslationException("CommandTranslator: Can't translate a null command string");
+		checkNull("CommandString", commandString);
+
+		commandString = commandString.trim();
+
+		checkEmpty("CommandString", commandString);
 
 		String[] tokens = commandString.split(DELIMITER);
 
 		String commandName = tokens[0];
 		String[] commandArgs = tokens.length == 1 ? NO_ARGS : Arrays.copyOfRange(tokens, 1, tokens.length);
 
+		// don't think this can be null
+		checkNull("CommandName", commandName);
+		checkEmpty("CommandName", commandName);
+
 		log.log(Level.FINE, "MetaCommand", new Object[] { commandName, commandArgs});
 
-		if (commandName == null || commandName.isEmpty())
-			throw new TranslationException("CommandTranslator: Command name can't be null or empty");
-
 		return new MetaCommand(commandName, commandArgs);
+	}
+
+	private void checkNull(String indentifier, String str) throws TranslationException
+	{
+		if (str == null)
+			throw new TranslationException("CommandTranslator: " + indentifier + " can't be null");
+	}
+
+	private void checkEmpty(String indentifier, String commandName) throws TranslationException
+	{
+		if (commandName.isEmpty())
+			throw new TranslationException("CommandTranslator: " + indentifier + " can't be an empty string");
 	}
 
 }

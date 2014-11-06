@@ -1,46 +1,41 @@
 package kosiec.Server;
 
-import kosiec.Server.Command.*;
+import kosiec.Server.Command.Command;
+import kosiec.Server.Command.CommandException;
+import kosiec.Server.Command.CommandFactory;
+import kosiec.Server.Command.CommandTranslator;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintStream;
-import java.net.Socket;
 
 /**
  * Created by Chad on 10/31/2014.
  */
-public class ClientHandler implements SocketHandler {
+public class ClientHandler implements Handler<Client> {
 
 	private final CommandTranslator commandTranslator;
 	private final CommandFactory commandFactory;
+	private final UserInterface ui;
 
-	private boolean done = false;
-
-	public ClientHandler(CommandTranslator commandTranslator, CommandFactory commandFactory)
+	public ClientHandler(CommandTranslator commandTranslator, CommandFactory commandFactory, UserInterface ui)
 	{
 		this.commandTranslator = commandTranslator;
 		this.commandFactory = commandFactory;
+		this.ui = ui;
 	}
 
-	@Override
-	public void handle(Socket socket)
+	public void handle(Client client)
 	{
 		try
 		{
-			BufferedReader socketIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//			PrintStream socketOut = new PrintStream(socket.getOutputStream());
-
 			// execute a connect command
 			commandFactory.make("Connect")
-						  .execute(socket, new String[0]);
+						  .execute(client, new String[0]);
 
-			while (!done && !socket.isClosed())
+			while (client.isConnected())
 			{
 				try
 				{
-					String line = socketIn.readLine();
+					String line = client.read();
 
 					if (line != null)
 					{
@@ -50,38 +45,34 @@ public class ClientHandler implements SocketHandler {
 						if (!meta.getCommandName().equals("Connect"))
 						{
 							Command c = commandFactory.make(meta.getCommandName());
-							c.execute(socket, meta.getCommandArgs());
+							c.execute(client, meta.getCommandArgs());
 						}
 					}
 				}
 				catch (CommandException e)
 				{
-					handleException(socket, e);
-				}
-				catch (TranslationException e)
-				{
-					handleException(socket, e);
+					handleException(client, e);
 				}
 			}
 
-			socket.close();
+			client.disconnect();
 		}
 		catch (IOException e)
 		{
 			// execute a connect command
 			commandFactory.make("Disconnect")
-					.execute(socket, new String[0]);
+					.execute(client, new String[0]);
 
 //			System.err.println("Client IOException; client probably closed without signaling");
 		}
 	}
 
-	private void handleException(Socket socket, Exception e) throws IOException
+	private void handleException(Client client, Exception e) throws IOException
 	{
-		if (!socket.isClosed())
-			new PrintStream(socket.getOutputStream()).println(e.getMessage());
-		System.err.println(e.getMessage());
-	}
+		if (client.isConnected())
+			client.send(e.getMessage());
 
+		ui.displayError(e.getMessage());
+	}
 
 }

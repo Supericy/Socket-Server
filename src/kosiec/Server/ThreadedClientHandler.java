@@ -6,25 +6,25 @@ import java.util.concurrent.ExecutorService;
 /**
  * Created by Chad on 11/1/2014.
  */
-public class ThreadedSocketHandler implements SocketHandler {
+public class ThreadedClientHandler implements Handler<Client> {
 
 	private final ExecutorService executor;
-	private final SocketHandler handler;
+	private final Handler<Client> handler;
 
-	public ThreadedSocketHandler(ExecutorService executor, SocketHandler handler)
+	public ThreadedClientHandler(ExecutorService executor, Handler<Client> handler)
 	{
 		this.executor = executor;
 		this.handler = handler;
 	}
 
 	@Override
-	public void handle(final Socket socket)
+	public void handle(final Client client)
 	{
 		executor.execute(new Runnable() {
 			@Override
 			public void run()
 			{
-				handler.handle(socket);
+				handler.handle(client);
 			}
 		});
 	}

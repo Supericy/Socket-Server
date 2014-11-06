@@ -1,5 +1,6 @@
 package kosiec.Server.Command.Commands;
 
+import kosiec.Server.Client;
 import kosiec.Server.Command.Command;
 import kosiec.Server.UserInterface;
 
@@ -20,13 +21,13 @@ public class DisconnectCommand implements Command {
 	}
 
 	@Override
-	public void execute(Socket socket, String[] args)
+	public void execute(Client client, String[] args)
 	{
 		try
 		{
-			if (socket.isConnected())
+			if (client.isConnected())
 			{
-				new PrintStream(socket.getOutputStream()).println("Disconnected");
+				client.send("Disconnected");
 
 				try
 				{
@@ -38,8 +39,7 @@ public class DisconnectCommand implements Command {
 					e.printStackTrace();
 				}
 
-				if (!socket.isClosed())
-				socket.close();
+				client.disconnect();
 			}
 
 		}
@@ -48,6 +48,6 @@ public class DisconnectCommand implements Command {
 			e.printStackTrace();
 		}
 
-		ui.display("Client disconnected from: " + socket.getInetAddress());
+		ui.display("Client disconnected from: " + client.getInetAddress());
 	}
 }

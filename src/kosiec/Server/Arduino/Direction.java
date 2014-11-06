@@ -7,18 +7,20 @@ public enum Direction {
 	FORWARD	((byte) 'w'),
 	RIGHT	((byte) 'a'),
 	REVERSE	((byte) 's'),
-	LEFT	((byte) 'd');
+	LEFT	((byte) 'd'),
+	STOP	((byte) 'q'),
+	STRAIGHT((byte) 'n');
 
-	private final byte arduinoValue;
+	private final byte directionByte;
 
-	private Direction(byte arduinoValue)
+	private Direction(byte directionByte)
 	{
-		this.arduinoValue = arduinoValue;
+		this.directionByte = directionByte;
 	}
 
-	public byte getArduinoValue()
+	public byte getDirectionByte()
 	{
-		return arduinoValue;
+		return directionByte;
 	}
 
 }

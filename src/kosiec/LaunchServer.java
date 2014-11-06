@@ -7,6 +7,7 @@ import kosiec.Server.Arduino.SerialPort.*;
 import kosiec.Server.Command.CommandFactory;
 import kosiec.Server.Command.CommandTranslator;
 import kosiec.Server.Command.Commands.ArduinoCommand;
+import kosiec.Server.Command.Commands.AuthCommand;
 import kosiec.Server.Command.Commands.ConnectCommand;
 import kosiec.Server.Command.Commands.DisconnectCommand;
 
@@ -47,13 +48,9 @@ public class LaunchServer {
 		}
 	}
 
-	public static void setupLogging()
-	{
-
-	}
-
 	public static void loadCommands(Container container) throws Exception
 	{
+		container.put(AuthCommand.class, new AuthCommand());
 		container.put(ArduinoCommand.class, new ArduinoCommand(container.get(SerialPortDirectionWriter.class)));
 		container.put(ConnectCommand.class, new ConnectCommand(container.get(UserInterface.class)));
 		container.put(DisconnectCommand.class, new DisconnectCommand(container.get(UserInterface.class)));
@@ -74,10 +71,15 @@ public class LaunchServer {
 			container.put(CommandTranslator.class, new CommandTranslator());
 			container.put(CommandFactory.class, new CommandFactory(container, COMMAND_PACKAGES));
 
-			container.put(SocketHandler.class, new ThreadedSocketHandler(Executors.newCachedThreadPool(), new ClientHandler(container.get(CommandTranslator.class), container.get(CommandFactory.class))));
+			container.put(Handler.class,
+					new ThreadedClientHandler(Executors.newCachedThreadPool(),
+						new ClientHandler(
+								container.get(CommandTranslator.class),
+								container.get(CommandFactory.class),
+								container.get(UserInterface.class))));
 
 			container.put(ServerSocket.class, new ServerSocket(PORT));
-			container.put(Server.class, new Server(container.get(ServerSocket.class), container.get(SocketHandler.class)));
+			container.put(Server.class, new Server(container.get(ServerSocket.class), container.get(Handler.class)));
 
 			loadCommands(container);
 		}

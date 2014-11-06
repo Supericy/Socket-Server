@@ -19,7 +19,7 @@ public class JsscSerialPortDirectionWriter implements SerialPortDirectionWriter 
 	@Override
 	public void write(Direction direction, int amount) throws SerialPortException
 	{
-		byte directionByte = direction.getArduinoValue();
+		byte directionByte = direction.getDirectionByte();
 		byte amountByte = (byte) amount;
 
 		serialPort.writeBytes(new byte[] {directionByte, amountByte});

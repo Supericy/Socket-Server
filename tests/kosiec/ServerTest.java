@@ -1,6 +1,7 @@
 package kosiec;
 
-import kosiec.Server.SocketHandler;
+import kosiec.Server.Client;
+import kosiec.Server.Handler;
 import kosiec.Server.Server;
 import org.junit.Test;
 
@@ -26,11 +27,17 @@ public class ServerTest {
 
 		Server server = new Server(mockServerSocket, mockHandler);
 
-		server.acceptAndHandleClient();
+		try
+		{
+			server.acceptAndHandleClient();
+			fail("Server should throw IOException, since socket hasn't connected");
+		}
+		catch (IOException e) {}
+
 
 		// make sure we've handled the socket
-		assertTrue(mockHandler.handled);
-		assertSame(mockHandler.handledSocket, mockServerSocket.ourSocket);
+//		assertTrue(mockHandler.handled);
+//		assertNotNull(mockHandler.client);
 
 	}
 
@@ -50,15 +57,15 @@ public class ServerTest {
 
 	}
 
-	static class MockHandler implements SocketHandler {
+	static class MockHandler implements Handler<Client> {
 
-		Socket handledSocket = null;
+		Client client = null;
 		boolean handled = false;
 
 		@Override
-		public void handle(Socket socket)
+		public void handle(Client socket)
 		{
-			handledSocket = socket;
+			client = socket;
 			handled = true;
 		}
 
