@@ -1,11 +1,23 @@
 package kosiec.Server.Command;
 
 import kosiec.Server.Container;
+import kosiec.Server.SimpleConsoleHandler;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by Chad on 10/31/2014.
  */
 public class CommandFactory {
+
+	private static final Logger log = Logger.getLogger( CommandFactory.class.getName() );
+	static {
+		log.addHandler(new SimpleConsoleHandler());
+		log.setLevel(Level.OFF);
+	}
+
+	public static final String CLASS_SUFFIX = "Command";
 
 	private final Container container;
 	private final String[] commandPackages;
@@ -20,9 +32,13 @@ public class CommandFactory {
 	{
 		// if there were more than 1 command, then use reflection or something but since theres just 1...
 
-		String className = commandName + "Command";
+		String className = commandName + CLASS_SUFFIX;
+
+		log.log(Level.FINE, "ClassName", new Object[]{ className });
 
 		Command command = getCommand(className);
+
+		log.log(Level.FINE, "Command", new Object[]{ command });
 
 		if (command == null)
 			throw new CommandException("CommandFactory: \"" + className + "\" command does not exist");
