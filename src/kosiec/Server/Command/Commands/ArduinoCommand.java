@@ -1,7 +1,7 @@
 package kosiec.Server.Command.Commands;
 
 import jssc.SerialPortException;
-import kosiec.Server.Arduino.JoystickDirection;
+import kosiec.Server.Arduino.Direction;
 import kosiec.Server.Arduino.SerialPort.SerialPortDirectionWriter;
 import kosiec.Server.Command.Command;
 import kosiec.Server.Command.CommandException;
@@ -25,7 +25,7 @@ public class ArduinoCommand implements Command {
 	{
 		validateArgsLength(args.length);
 
-		JoystickDirection direction = getJoystickDirection(args[0]);
+		Direction direction = getJoystickDirection(args[0]);
 		int amount = getAmount(args[1]);
 
 		try
@@ -44,11 +44,11 @@ public class ArduinoCommand implements Command {
 			throw new CommandException("ArduinoCommand expects 2 args: a (Direction)direction and an (int)amount");
 	}
 
-	private JoystickDirection getJoystickDirection(String arg)
+	private Direction getJoystickDirection(String arg)
 	{
 		try
 		{
-			return JoystickDirection.valueOf(arg.toUpperCase());
+			return Direction.valueOf(arg.toUpperCase());
 		}
 		catch (IllegalArgumentException e)
 		{

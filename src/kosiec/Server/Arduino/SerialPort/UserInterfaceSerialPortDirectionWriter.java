@@ -1,7 +1,7 @@
 package kosiec.Server.Arduino.SerialPort;
 
 import jssc.SerialPortException;
-import kosiec.Server.Arduino.JoystickDirection;
+import kosiec.Server.Arduino.Direction;
 import kosiec.Server.UserInterface;
 
 /**
@@ -17,7 +17,7 @@ public class UserInterfaceSerialPortDirectionWriter implements SerialPortDirecti
 	}
 
 	@Override
-	public void write(JoystickDirection direction, int amount) throws SerialPortException
+	public void write(Direction direction, int amount) throws SerialPortException
 	{
 		ui.display(direction + ";" + amount);
 	}

@@ -24,25 +24,30 @@ public class DisconnectCommand implements Command {
 	{
 		try
 		{
-			new PrintStream(socket.getOutputStream()).println("Disconnected");
-
-			try
+			if (socket.isConnected())
 			{
-				// give the client a chance to read the msg
-				Thread.sleep(1000);
-			}
-			catch (InterruptedException e)
-			{
-				e.printStackTrace();
+				new PrintStream(socket.getOutputStream()).println("Disconnected");
+
+				try
+				{
+					// give the client a chance to read the msg
+					Thread.sleep(500);
+				}
+				catch (InterruptedException e)
+				{
+					e.printStackTrace();
+				}
+
+				if (!socket.isClosed())
+				socket.close();
 			}
 
-			socket.close();
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
 
-		ui.display("Client disconnected");
+		ui.display("Client disconnected from: " + socket.getInetAddress());
 	}
 }

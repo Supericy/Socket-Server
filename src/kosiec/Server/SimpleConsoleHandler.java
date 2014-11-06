@@ -17,7 +17,7 @@ public class SimpleConsoleHandler extends Handler {
 	@Override
 	public void publish(LogRecord record)
 	{
-		System.out.println(record.getLoggerName() + " >> " + record.getMessage() + stringify(record.getParameters(), record.getParameters()!=null));
+		System.err.println(record.getLoggerName() + " >> " + record.getMessage() + stringify(record.getParameters()));
 	}
 
 	@Override
@@ -31,17 +31,31 @@ public class SimpleConsoleHandler extends Handler {
 	{
 	}
 
-	private String stringify(Object[] parameters, boolean includeArrows)
+	private String stringify(Object[] parameters)
 	{
 		StringBuilder sb = new StringBuilder();
 
-		if (includeArrows)
-			sb.append(" >> ");
-
 		if (parameters != null)
 		{
+			boolean first = true;
+			sb.append(" : [");
+
 			for (Object param : parameters)
-				sb.append(param.toString());
+			{
+				if (!first)
+					sb.append(", ");
+
+				sb.append("(");
+				sb.append(param == null ? "null" : param.getClass().toString());
+				sb.append(", ");
+				sb.append(param == null ? "null" : param.toString());
+				sb.append(")");
+
+				first = false;
+			}
+
+
+			sb.append("]");
 		}
 
 		return new String(sb);
