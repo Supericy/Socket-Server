@@ -7,4 +7,6 @@ public interface UserInterface {
 
 	public void display(String msg);
 
+	public void displayError(String msg);
+
 }

@@ -13,14 +13,19 @@ public class ConsoleUserInterfaceTest {
 	public void testDisplay() throws Exception
 	{
 		MockPrintStream mockStream = new MockPrintStream();
+		MockPrintStream mockErrorStream = new MockPrintStream();
 
-		ConsoleUserInterface consoleUserInterface = new ConsoleUserInterface(mockStream);
+		ConsoleUserInterface consoleUserInterface = new ConsoleUserInterface(mockStream, mockErrorStream);
 
 		// new stream should have had nothing written to it
 		assertEquals(null, mockStream.whatWasLastWritten());
+		assertEquals(null, mockErrorStream.whatWasLastWritten());
 
 		consoleUserInterface.display("Just a test string to display");
+		consoleUserInterface.displayError("Just a test string to display");
+
 		assertEquals("Just a test string to display", mockStream.whatWasLastWritten());
+		assertEquals("Just a test string to display", mockErrorStream.whatWasLastWritten());
 	}
 
 	static class MockPrintStream extends PrintStream {
