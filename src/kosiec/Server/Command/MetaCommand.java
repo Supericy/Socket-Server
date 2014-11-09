@@ -1,4 +1,4 @@
-package kosiec.Server;
+package kosiec.Server.Command;
 
 /**
  * Created by Chad on 10/31/2014.

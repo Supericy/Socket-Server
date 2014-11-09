@@ -85,7 +85,7 @@ public class LaunchServer {
 		}
 		catch (Exception e)
 		{
-			System.err.println("Contained has failed to load:");
+			System.err.println("Container has failed to load:");
 			System.err.println(e.getMessage());
 			throw e;
 		}

@@ -1,7 +1,7 @@
 package kosiec;
 
 import kosiec.Server.Command.CommandTranslator;
-import kosiec.Server.MetaCommand;
+import kosiec.Server.Command.MetaCommand;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
