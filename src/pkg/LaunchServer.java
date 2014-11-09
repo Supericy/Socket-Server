@@ -19,7 +19,7 @@ import java.util.concurrent.Executors;
  */
 public class LaunchServer {
 
-	public static final int PORT = 5556;
+	public static final int PORT = 5555;
 	public static final String[] COMMAND_PACKAGES = {
 			"pkg.Server.Command.Commands"
 	};
