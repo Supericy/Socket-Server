@@ -2,6 +2,7 @@ package pkg.Server.Command.Commands;
 
 import pkg.Server.Client;
 import pkg.Server.Command.Command;
+import pkg.Server.Server;
 import pkg.Server.UserInterface;
 
 import java.io.IOException;
@@ -11,21 +12,28 @@ import java.io.IOException;
  */
 public class DisconnectCommand implements Command {
 
-	protected UserInterface ui;
+	private static final String NO_REASON = "not specified";
 
-	public DisconnectCommand(UserInterface ui)
+	protected UserInterface ui;
+	private final Server server;
+
+	public DisconnectCommand(UserInterface ui, Server server)
 	{
 		this.ui = ui;
+		this.server = server;
 	}
 
 	@Override
 	public void execute(Client client, String[] args)
 	{
+		String reason = (args.length > 0 ? args[0] : NO_REASON);
+
 		try
 		{
 			if (client.isConnected())
 			{
-				client.send("Disconnected");
+				// send reason to client?
+				client.send("Disconnected;" + reason);
 
 				try
 				{
@@ -46,6 +54,7 @@ public class DisconnectCommand implements Command {
 			e.printStackTrace();
 		}
 
-		ui.display("Client disconnected from: " + client.getInetAddress()+args[0]);
+		ui.display("Client disconnected from: " + client.getInetAddress() + "; reason: " + reason);
+		server.removeClient(client);
 	}
 }

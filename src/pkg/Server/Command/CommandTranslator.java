@@ -18,7 +18,6 @@ public class CommandTranslator {
 	}
 
 	public static final String DELIMITER = ";";
-	public static final String[] NO_ARGS = new String[0];
 
 	public MetaCommand decode(String commandString) throws TranslationException
 	{
@@ -31,7 +30,7 @@ public class CommandTranslator {
 		String[] tokens = commandString.split(DELIMITER);
 
 		String commandName = tokens[0];
-		String[] commandArgs = tokens.length == 1 ? NO_ARGS : Arrays.copyOfRange(tokens, 1, tokens.length);
+		String[] commandArgs = tokens.length == 1 ? Command.NO_ARGS : Arrays.copyOfRange(tokens, 1, tokens.length);
 
 		// don't think this can be null
 		checkNull("CommandName", commandName);

@@ -12,6 +12,9 @@ import java.io.InputStreamReader;
  */
 public class LaunchClient {
 
+	public static final String SERVER_ADDRESS = "192.168.0.100";
+	public static final int SERVER_PORT = 5555;
+
 	public static void main(String[] args) throws IOException, InterruptedException
 	{
 		Client client = createClient();
@@ -34,7 +37,7 @@ public class LaunchClient {
 
 	public static Client createClient() throws IOException
 	{
-		final Client client = new Client("192.168.0.100", 5556);
+		final Client client = new Client(SERVER_ADDRESS, SERVER_PORT);
 
 		// new listener to output responses to console
 		client.addListener(new ResponseListener() {

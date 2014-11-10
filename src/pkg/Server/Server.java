@@ -3,6 +3,9 @@ package pkg.Server;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.logging.*;
 
 /**
@@ -18,11 +21,13 @@ public class Server {
 
 	private final ServerSocket serverSocket;
 	private final Handler<Client> handler;
+	private final List<Client> clientList;
 
 	public Server(ServerSocket serverSocket, Handler<Client> handler) throws IOException
 	{
 		this.serverSocket = serverSocket;
 		this.handler = handler;
+		this.clientList = new ArrayList<Client>();
 	}
 
 	public void acceptAndHandleClient() throws IOException
@@ -32,6 +37,23 @@ public class Server {
 		log.log(Level.FINE, "New client", new Object[] {socket.getInetAddress()});
 
 		handler.handle(new Client(socket));
+	}
+
+	public List<Client> getClientList()
+	{
+		return clientList;
+	}
+
+	public void addClient(Client client)
+	{
+		log.log(Level.INFO, "Adding Client to Listing", new Object[] { client });
+		clientList.add(client);
+	}
+
+	public void removeClient(Client client)
+	{
+		log.log(Level.INFO, "Removing Client from Listing", new Object[] { client });
+		clientList.remove(client);
 	}
 
 }

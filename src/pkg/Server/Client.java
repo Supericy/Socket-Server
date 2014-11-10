@@ -69,7 +69,7 @@ public class Client {
 
 	}
 
-    public InetAddress connectedToInetAddress()
+    public InetAddress getServerInetAddress()
     {
         return socket.getLocalAddress();
     }

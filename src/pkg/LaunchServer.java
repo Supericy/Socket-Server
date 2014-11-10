@@ -29,11 +29,38 @@ public class LaunchServer {
 	{
 		try
 		{
-			Container container = loadClassContainer();
+			final Container container = loadClassContainer();
 
-			Server server = container.get(Server.class);
-			UserInterface ui = container.get(UserInterface.class);
-			Thread serverThread = createAndStartServerThread(server, ui);
+			final Server server = container.get(Server.class);
+			final UserInterface ui = container.get(UserInterface.class);
+			final Thread serverThread = createAndStartServerThread(server, ui);
+
+			// just spams the current client list, this will be extracted to a ServerCommand eventually
+//			new Thread(new Runnable() {
+//				@Override
+//				public void run()
+//				{
+//					while (true)
+//					{
+//						ui.display("-------------------");
+//						ui.display("|  Client List:   |");
+//						ui.display("-------------------");
+//						for (Client client : server.getClientList())
+//						{
+//							ui.display(client.getInetAddress().toString());
+//						}
+//						ui.display("-------------------");
+//						try
+//						{
+//							Thread.sleep(2000);
+//						}
+//						catch (InterruptedException e)
+//						{
+//							e.printStackTrace();
+//						}
+//					}
+//				}
+//			}).start();
 
 			serverThread.join();
 		}
@@ -47,8 +74,6 @@ public class LaunchServer {
 	{
 		ui.display("Server::Ready");
 		ui.display("Server::Accepting Connections => Port(" + PORT + ")");
-
-
 
 		Thread t = new Thread(new Runnable() {
 			@Override
@@ -79,8 +104,8 @@ public class LaunchServer {
 	{
 		container.put(AuthCommand.class, new AuthCommand());
 		container.put(ArduinoCommand.class, new ArduinoCommand(container.get(SerialPortDirectionWriter.class)));
-		container.put(ConnectCommand.class, new ConnectCommand(container.get(UserInterface.class)));
-		container.put(DisconnectCommand.class, new DisconnectCommand(container.get(UserInterface.class)));
+		container.put(ConnectCommand.class, new ConnectCommand(container.get(UserInterface.class), container.get(Server.class)));
+		container.put(DisconnectCommand.class, new DisconnectCommand(container.get(UserInterface.class), container.get(Server.class)));
 	}
 
 	// TODO: could export this to a config file
@@ -92,8 +117,10 @@ public class LaunchServer {
 		{
 			container.put(UserInterface.class, new ConsoleUserInterface(System.out, System.err));
 
-			container.put(SerialPortDirectionWriter.class, new JsscSerialPortDirectionWriter(createSerialPort(container.get(UserInterface.class))));
-//			container.put(SerialPortDirectionWriter.class, new UserInterfaceSerialPortDirectionWriter(container.get(UserInterface.class)));
+//			container.put(SerialPortDirectionWriter.class, new JsscSerialPortDirectionWriter(createSerialPort(container.get(UserInterface.class))));
+			container.put(SerialPortDirectionWriter.class, new UserInterfaceSerialPortDirectionWriter(container.get(UserInterface.class)));
+
+			container.put(ClientAuthorizationService.class, new ClientAuthorizationService());
 
 			container.put(CommandTranslator.class, new CommandTranslator());
 			container.put(CommandFactory.class, new CommandFactory(container, COMMAND_PACKAGES));
@@ -103,7 +130,8 @@ public class LaunchServer {
 						new ClientHandler(
 								container.get(CommandTranslator.class),
 								container.get(CommandFactory.class),
-								container.get(UserInterface.class))));
+								container.get(UserInterface.class),
+								container.get(ClientAuthorizationService.class))));
 
 			container.put(ServerSocket.class, new ServerSocket(PORT));
 			container.put(Server.class, new Server(container.get(ServerSocket.class), container.get(Handler.class)));

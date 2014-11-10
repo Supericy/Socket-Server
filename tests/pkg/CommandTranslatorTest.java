@@ -1,5 +1,6 @@
 package pkg;
 
+import pkg.Server.Command.Command;
 import pkg.Server.Command.CommandTranslator;
 import pkg.Server.Command.MetaCommand;
 import org.junit.Test;
@@ -16,7 +17,7 @@ public class CommandTranslatorTest {
 		MetaCommand meta1 = commandTranslator.decode("CommandName1");
 		assertEquals("CommandName1", meta1.getCommandName());
 		assertEquals(0, meta1.getCommandArgs().length);
-		assertSame(CommandTranslator.NO_ARGS, meta1.getCommandArgs());
+		assertSame(Command.NO_ARGS, meta1.getCommandArgs());
 
 		MetaCommand meta2 = commandTranslator.decode("CommandName2;Arg0");
 		assertEquals("CommandName2", meta2.getCommandName());

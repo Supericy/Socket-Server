@@ -2,6 +2,7 @@ package pkg.Server.Command.Commands;
 
 import pkg.Server.Client;
 import pkg.Server.Command.Command;
+import pkg.Server.Server;
 import pkg.Server.UserInterface;
 
 import java.io.IOException;
@@ -12,10 +13,12 @@ import java.io.IOException;
 public class ConnectCommand implements Command {
 
 	private final UserInterface ui;
+	private final Server server;
 
-	public ConnectCommand(UserInterface ui)
+	public ConnectCommand(UserInterface ui, Server server)
 	{
 		this.ui = ui;
+		this.server = server;
 	}
 
 	@Override
@@ -23,7 +26,8 @@ public class ConnectCommand implements Command {
 	{
 		try
 		{
-			client.send("Connected to:" + client.connectedToInetAddress().toString());
+
+			client.send("Connected to:" + client.getServerInetAddress().toString());
 		}
 		catch (IOException e)
 		{
@@ -31,6 +35,7 @@ public class ConnectCommand implements Command {
 		}
 
 		ui.display("Client connected from: " + client.getInetAddress());
+		server.addClient(client);
 	}
 
 }

@@ -38,7 +38,7 @@ public class Client {
 			@Override
 			public void handle(String response)
 			{
-				if (DISCONNECTED_RESPONSE.equals(response))
+				if (response.startsWith(DISCONNECTED_RESPONSE))
 					disconnect(false, false);
 			}
 		});

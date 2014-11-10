@@ -12,12 +12,14 @@ public class ClientHandler implements Handler<Client> {
 	private final CommandTranslator commandTranslator;
 	private final CommandFactory commandFactory;
 	private final UserInterface ui;
+	private final ClientAuthorizationService authorizationService;
 
-	public ClientHandler(CommandTranslator commandTranslator, CommandFactory commandFactory, UserInterface ui)
+	public ClientHandler(CommandTranslator commandTranslator, CommandFactory commandFactory, UserInterface ui, ClientAuthorizationService authorizationService)
 	{
 		this.commandTranslator = commandTranslator;
 		this.commandFactory = commandFactory;
 		this.ui = ui;
+		this.authorizationService = authorizationService;
 	}
 
 	public void handle(Client client)
@@ -26,32 +28,20 @@ public class ClientHandler implements Handler<Client> {
 		{
 			// execute a connect command
 			commandFactory.make("Connect")
-						  .execute(client, new String[0]);
-			if(client.isConnected())
+						  .execute(client, Command.NO_ARGS);
+
+			// ensure client sends the correct authorization code
+			if (!authorizationService.authorize(client, client.read()))
 			{
-				try
-				{
-					String line = client.read();
-					// Authenticate Client as an authorized User of our server
-					ui.display("LINE" + line);
-					if(verifyClient(client, line))
-					{
-						client.send("Access Granted");
-						ui.display("LINE" + line);
-						// all good
-					}
-					else
-					{   // kill that mother fucker
-						commandFactory.make("Disconnect")
-								.execute(client, new String[]{"  Invalid Authorization"});
-					}
-				}
-				catch (CommandException e)
-				{
-					handleException(client, e);
-				}
+				commandFactory.make("Disconnect")
+						.execute(client, new String[] { ClientAuthorizationService.UNAUTHORIZED_MESSAGE });
 			}
-			while (client.isConnected())
+
+			// add permissions
+			client.addPermission(Permission.GENERAL_ACCESS);
+			client.send("Access Granted");
+
+			while (client.isConnected() && client.hasPermission(Permission.GENERAL_ACCESS))
 			{
 				try
 				{
@@ -74,17 +64,14 @@ public class ClientHandler implements Handler<Client> {
 					handleException(client, e);
 				}
 			}
-
-			client.disconnect();
 		}
 		catch (IOException e)
 		{
-			// execute a connect command
-			commandFactory.make("Disconnect")
-					.execute(client, new String[0]);
-
-//			System.err.println("Client IOException; client probably closed without signaling");
+			ui.display("Client IOException; client probably closed without signaling");
 		}
+
+		commandFactory.make("Disconnect")
+					.execute(client, Command.NO_ARGS);
 	}
 
 	private void handleException(Client client, Exception e) throws IOException
@@ -95,23 +82,4 @@ public class ClientHandler implements Handler<Client> {
 		ui.displayError(e.getMessage());
 	}
 
-	private boolean verifyClient(Client client, String clientGreeting)
-	{
-		boolean verified = false;
-		try {
-			int serverIp = Integer.parseInt(client.connectedToInetAddress().toString().replaceAll("\\/","").replaceAll("\\.", ""));
-			int clientIp = Integer.parseInt(client.getInetAddress().toString().replaceAll("\\/","").replaceAll("\\.", ""));
-			int received = Integer.parseInt(clientGreeting);
-			ui.display(String.valueOf(serverIp));
-			ui.display(String.valueOf(serverIp-clientIp));
-			if(serverIp - clientIp == received)
-				verified = true;
-
-		}
-		catch (NumberFormatException e)
-		{
-			// they didn't send what i wanted.
-		}
-		return verified;
-	}
 }
