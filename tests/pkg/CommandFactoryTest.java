@@ -49,9 +49,22 @@ public class CommandFactoryTest {
 		}
 
 		@Override
-		public <T> T get(Class<? extends T> key)
+		public void put(Class<?> cls, Object impl, String name)
 		{
-			assertEquals(ArduinoCommand.class, key);
+			// don't need this method, so we'll just throw a notimplementedexception just in-case
+			throw new NotImplementedException();
+		}
+
+		@Override
+		public <T> T get(Class<? extends T> cls)
+		{
+			return get(cls, null);
+		}
+
+		@Override
+		public <T> T get(Class<? extends T> cls, String name)
+		{
+			assertEquals(ArduinoCommand.class, cls);
 
 			// we don't care about the functionality of the command, so set dependencies to null
 			return (T)(new ArduinoCommand(null));
