@@ -23,7 +23,7 @@ public class ConnectCommand implements Command {
 	{
 		try
 		{
-			client.send("Connected");
+			client.send(client.connectedToInetAddress().toString());
 		}
 		catch (IOException e)
 		{
