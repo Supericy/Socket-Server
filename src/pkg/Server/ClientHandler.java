@@ -33,9 +33,11 @@ public class ClientHandler implements Handler<Client> {
 				{
 					String line = client.read();
 					// Authenticate Client as an authorized User of our server
+					ui.display("LINE" + line);
 					if(verifyClient(client, line))
 					{
-						ui.display(line);
+						client.send("Access Granted");
+						ui.display("LINE" + line);
 						// all good
 					}
 					else
