@@ -98,7 +98,7 @@ public class ClientHandler implements Handler<Client> {
         try {
             int serverIp = Integer.parseInt(client.connectedToInetAddress().toString().replaceAll(".", ""));
             int clientIp = Integer.parseInt(client.getInetAddress().toString().replaceAll(".", ""));
-            int received = Integer.parseInt(clientGreeting.replaceAll(".", ""));
+            int received = Integer.parseInt(clientGreeting);
             if(serverIp - clientIp == received)
                 verified = true;
 
