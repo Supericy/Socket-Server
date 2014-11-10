@@ -35,12 +35,13 @@ public class ClientHandler implements Handler<Client> {
 					// Authenticate Client as an authorized User of our server
 					if(verifyClient(client, line))
 					{
+						ui.display(line);
 						// all good
 					}
 					else
 					{   // kill that mother fucker
 						commandFactory.make("Disconnect")
-								.execute(client, new String[]{"Invalid Authorization"});
+								.execute(client, new String[]{"  Invalid Authorization"});
 					}
 				}
 				catch (CommandException e)
@@ -99,6 +100,8 @@ public class ClientHandler implements Handler<Client> {
 			int serverIp = Integer.parseInt(client.connectedToInetAddress().toString().replaceAll("\\/","").replaceAll("\\.", ""));
 			int clientIp = Integer.parseInt(client.getInetAddress().toString().replaceAll("\\/","").replaceAll("\\.", ""));
 			int received = Integer.parseInt(clientGreeting);
+			ui.display(String.valueOf(serverIp));
+			ui.display(String.valueOf(serverIp-clientIp));
 			if(serverIp - clientIp == received)
 				verified = true;
 
