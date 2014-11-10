@@ -46,6 +46,6 @@ public class DisconnectCommand implements Command {
 			e.printStackTrace();
 		}
 
-		ui.display("Client disconnected from: " + client.getInetAddress());
+		ui.display("Client disconnected from: " + client.getInetAddress()+args[0]);
 	}
 }
