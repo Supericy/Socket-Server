@@ -5,9 +5,9 @@ package pkg.Server.Arduino;
  */
 public enum Direction {
 	FORWARD	((byte) 'w'),
-	RIGHT	((byte) 'a'),
+	RIGHT	((byte) 'd'),
 	REVERSE	((byte) 's'),
-	LEFT	((byte) 'd'),
+	LEFT	((byte) 'a'),
 	STOP	((byte) 'q'),
 	STRAIGHT((byte) 'n');
 
