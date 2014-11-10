@@ -35,6 +35,7 @@ public class LaunchServer {
 			UserInterface ui = container.get(UserInterface.class);
 			Thread serverThread = createAndStartServerThread(server, ui);
 
+			serverThread.join();
 		}
 		catch (Exception e)
 		{
