@@ -10,7 +10,7 @@ public class SerialPortFactory {
 
 	public SerialPort make() throws SerialPortException
 	{
-		SerialPort serialPort = new SerialPort("COM1");
+		SerialPort serialPort = new SerialPort("COM3");
 
 		serialPort.openPort();
 		serialPort.setParams(SerialPort.BAUDRATE_9600,
