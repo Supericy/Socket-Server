@@ -27,27 +27,27 @@ public class ClientHandler implements Handler<Client> {
 			// execute a connect command
 			commandFactory.make("Connect")
 						  .execute(client, new String[0]);
-            if(client.isConnected())
-            {
-                try
-                {
-                    String line = client.read();
-                    // Authenticate Client as an authorized User of our server
-                    if(verifyClient(client, line))
-                    {
-                        // all good
-                    }
-                    else
-                    {   // kill that mother fucker
-                        commandFactory.make("Disconnect")
-                                .execute(client, new String[0]);
-                    }
-                }
-                catch (CommandException e)
-                {
-                    handleException(client, e);
-                }
-            }
+			if(client.isConnected())
+			{
+				try
+				{
+					String line = client.read();
+					// Authenticate Client as an authorized User of our server
+					if(verifyClient(client, line))
+					{
+						// all good
+					}
+					else
+					{   // kill that mother fucker
+						commandFactory.make("Disconnect")
+								.execute(client, new String[]{"Invalid Authorization"});
+					}
+				}
+				catch (CommandException e)
+				{
+					handleException(client, e);
+				}
+			}
 			while (client.isConnected())
 			{
 				try
@@ -92,21 +92,21 @@ public class ClientHandler implements Handler<Client> {
 		ui.displayError(e.getMessage());
 	}
 
-    private boolean verifyClient(Client client, String clientGreeting)
-    {
-        boolean verified = false;
-        try {
-            int serverIp = Integer.parseInt(client.connectedToInetAddress().toString().replaceAll("\\/","").replaceAll("\\.", ""));
-            int clientIp = Integer.parseInt(client.getInetAddress().toString().replaceAll("\\/","").replaceAll("\\.", ""));
-            int received = Integer.parseInt(clientGreeting);
-            if(serverIp - clientIp == received)
-                verified = true;
+	private boolean verifyClient(Client client, String clientGreeting)
+	{
+		boolean verified = false;
+		try {
+			int serverIp = Integer.parseInt(client.connectedToInetAddress().toString().replaceAll("\\/","").replaceAll("\\.", ""));
+			int clientIp = Integer.parseInt(client.getInetAddress().toString().replaceAll("\\/","").replaceAll("\\.", ""));
+			int received = Integer.parseInt(clientGreeting);
+			if(serverIp - clientIp == received)
+				verified = true;
 
-        }
-        catch (NumberFormatException e)
-        {
-            // they didn't send what i wanted.
-        }
-        return verified;
-    }
+		}
+		catch (NumberFormatException e)
+		{
+			// they didn't send what i wanted.
+		}
+		return verified;
+	}
 }
