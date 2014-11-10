@@ -65,8 +65,8 @@ public class LaunchServer {
 		{
 			container.put(UserInterface.class, new ConsoleUserInterface(System.out, System.err));
 
-//			container.put(SerialPortDirectionWriter.class, new JsscSerialPortDirectionWriter(createSerialPort(container.get(UserInterface.class))));
-			container.put(SerialPortDirectionWriter.class, new UserInterfaceSerialPortDirectionWriter(container.get(UserInterface.class)));
+			container.put(SerialPortDirectionWriter.class, new JsscSerialPortDirectionWriter(createSerialPort(container.get(UserInterface.class))));
+//			container.put(SerialPortDirectionWriter.class, new UserInterfaceSerialPortDirectionWriter(container.get(UserInterface.class)));
 
 			container.put(CommandTranslator.class, new CommandTranslator());
 			container.put(CommandFactory.class, new CommandFactory(container, COMMAND_PACKAGES));

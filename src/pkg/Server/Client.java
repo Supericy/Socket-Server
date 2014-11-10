@@ -66,6 +66,11 @@ public class Client {
 	public InetAddress getInetAddress()
 	{
 		return socket.getInetAddress();
+
 	}
 
+    public InetAddress connectedToInetAddress()
+    {
+        return socket.getLocalAddress();
+    }
 }
