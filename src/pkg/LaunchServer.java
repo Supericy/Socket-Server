@@ -11,6 +11,7 @@ import pkg.Server.Command.Commands.AuthCommand;
 import pkg.Server.Command.Commands.ConnectCommand;
 import pkg.Server.Command.Commands.DisconnectCommand;
 
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.concurrent.Executors;
 
@@ -32,20 +33,45 @@ public class LaunchServer {
 
 			Server server = container.get(Server.class);
 			UserInterface ui = container.get(UserInterface.class);
+			Thread serverThread = createAndStartServerThread(server, ui);
 
-			ui.display("Server::Ready");
-			ui.display("Server::Accepting Connections => Port(" + PORT + ")");
-
-			while (true)
-			{
-				ui.display("Server::Waiting");
-				server.acceptAndHandleClient();
-			}
 		}
 		catch (Exception e)
 		{
 			e.printStackTrace();
 		}
+	}
+
+	public static Thread createAndStartServerThread(final Server server, final UserInterface ui)
+	{
+		ui.display("Server::Ready");
+		ui.display("Server::Accepting Connections => Port(" + PORT + ")");
+
+
+
+		Thread t = new Thread(new Runnable() {
+			@Override
+			public void run()
+			{
+				try
+				{
+					while (true)
+					{
+						ui.display("Server::Waiting");
+						server.acceptAndHandleClient();
+					}
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
+			}
+		});
+
+		t.setDaemon(true);
+		t.start();
+
+		return t;
 	}
 
 	public static void loadCommands(Container container) throws Exception
